@@ -18,19 +18,24 @@ function onFormSubmit(e) {
   e.preventDefault();
   e.currentTarget.reset();
   localStorage.removeItem(STORAGE_KEY);
+  console.log('formData: ', formData);
+
+  // if (e.target.email.value === '') {
+  //   alert('Заповніть всі поля!');
+  // } else {
+  //   console.log('formData: ', formData);
+  // }
 }
 
 function onTextareaInput(e) {
   formData[e.target.name] = e.target.value;
-  console.log(formData);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
 }
 
 function populateTextarea() {
   const savedMessage = JSON.parse(localStorage.getItem(STORAGE_KEY));
 
-  if (savedMessage) {
-    refs.textarea.value = savedMessage['message'] || '';
-    refs.input.value = savedMessage['email'] || '';
-  }
+  if (savedMessage === null) return;
+  refs.input.value = savedMessage['email'] || '';
+  refs.textarea.value = savedMessage['message'] || '';
 }
