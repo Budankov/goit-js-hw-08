@@ -16,15 +16,15 @@ refs.form.addEventListener('input', throttle(onTextareaInput, 500));
 
 function onFormSubmit(e) {
   e.preventDefault();
-  e.currentTarget.reset();
   localStorage.removeItem(STORAGE_KEY);
-  console.log('formData: ', formData);
 
-  // if (e.target.email.value === '') {
-  //   alert('Заповніть всі поля!');
-  // } else {
-  //   console.log('formData: ', formData);
-  // }
+  if (e.target.email.value === '' || e.target.message.value === '') {
+    alert('Заповніть всі поля!');
+    return;
+  } else {
+    e.currentTarget.reset();
+    console.log('formData: ', formData);
+  }
 }
 
 function onTextareaInput(e) {
