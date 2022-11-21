@@ -1,9 +1,9 @@
 import throttle from 'lodash.throttle';
 
 const refs = {
-  form: document.querySelector('form'),
-  input: document.querySelector('input'),
-  textarea: document.querySelector('textarea'),
+  formEmail: document.querySelector('[name="email"]'),
+  formTextArea: document.querySelector('[name="message"]'),
+  formSubmit: document.querySelector('.feedback-form'),
 };
 
 const STORAGE_KEY = 'feedback-form-state';
@@ -11,18 +11,36 @@ const formData = {};
 
 populateTextarea();
 
-refs.form.addEventListener('submit', onFormSubmit);
-refs.form.addEventListener('input', throttle(onTextareaInput, 500));
+refs.formSubmit.addEventListener('submit', onFormSubmit);
+refs.formSubmit.addEventListener('input', throttle(onTextareaInput), 500);
 
+// Без перевірки заповненя полів.
+// function onFormSubmit(e) {
+//   e.preventDefault();
+
+//   formData.email = refs.formEmail.value;
+//   formData.message = refs.formTextArea.value;
+
+//   console.log('formData: ', formData);
+
+//   refs.formSubmit.reset();
+//   localStorage.removeItem(STORAGE_KEY);
+// }
+
+// З перевіркою заповненя полів.
 function onFormSubmit(e) {
   e.preventDefault();
+
+  formData.email = refs.formEmail.value;
+  formData.message = refs.formTextArea.value;
+
   localStorage.removeItem(STORAGE_KEY);
 
   if (e.target.email.value === '' || e.target.message.value === '') {
     alert('Заповніть всі поля!');
     return;
   } else {
-    e.currentTarget.reset();
+    refs.formSubmit.reset();
     console.log('formData: ', formData);
   }
 }
@@ -33,9 +51,11 @@ function onTextareaInput(e) {
 }
 
 function populateTextarea() {
-  const savedMessage = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  const savedData = localStorage.getItem(STORAGE_KEY);
 
-  if (savedMessage === null) return;
-  refs.input.value = savedMessage['email'] || '';
-  refs.textarea.value = savedMessage['message'] || '';
+  const parsedData = JSON.parse(savedData);
+  if (parsedData) {
+    refs.formEmail.value = parsedData.email;
+    refs.formTextArea.value = parsedData.message;
+  }
 }
