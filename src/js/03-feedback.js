@@ -14,35 +14,16 @@ populateTextarea();
 refs.formSubmit.addEventListener('submit', onFormSubmit);
 refs.formSubmit.addEventListener('input', throttle(onTextareaInput), 500);
 
-// Без перевірки заповненя полів.
-// function onFormSubmit(e) {
-//   e.preventDefault();
-
-//   formData.email = refs.formEmail.value;
-//   formData.message = refs.formTextArea.value;
-
-//   console.log('formData: ', formData);
-
-//   refs.formSubmit.reset();
-//   localStorage.removeItem(STORAGE_KEY);
-// }
-
-// З перевіркою заповненя полів.
 function onFormSubmit(e) {
   e.preventDefault();
 
   formData.email = refs.formEmail.value;
   formData.message = refs.formTextArea.value;
 
-  localStorage.removeItem(STORAGE_KEY);
+  console.log('formData: ', formData);
 
-  if (e.target.email.value === '' || e.target.message.value === '') {
-    alert('Заповніть всі поля!');
-    return;
-  } else {
-    refs.formSubmit.reset();
-    console.log('formData: ', formData);
-  }
+  refs.formSubmit.reset();
+  localStorage.removeItem(STORAGE_KEY);
 }
 
 function onTextareaInput(e) {
