@@ -1,42 +1,42 @@
 import throttle from 'lodash.throttle';
 
-const refs = {
-  formEmail: document.querySelector('[name="email"]'),
-  formTextArea: document.querySelector('[name="message"]'),
-  formSubmit: document.querySelector('.feedback-form'),
-};
+const formEmail = document.querySelector('.feedback-form [name="email"]');
+const formTextArea = document.querySelector('[name="message"]');
+const formSubmit = document.querySelector('.feedback-form');
 
-const STORAGE_KEY = 'feedback-form-state';
+const STORAGE_FORM = 'feedback-form-state';
+
 const formData = {};
 
-populateTextarea();
+onPageReload();
 
-refs.formSubmit.addEventListener('submit', onFormSubmit);
-refs.formSubmit.addEventListener('input', throttle(onTextareaInput), 500);
+formSubmit.addEventListener('input', throttle(onFormInput), 500);
+formSubmit.addEventListener('submit', onFormSubmit);
 
-function onFormSubmit(e) {
-  e.preventDefault();
-
-  formData.email = refs.formEmail.value;
-  formData.message = refs.formTextArea.value;
-
-  console.log('formData: ', formData);
-
-  refs.formSubmit.reset();
-  localStorage.removeItem(STORAGE_KEY);
+function onFormInput(evt) {
+  formData[evt.target.name] = evt.target.value;
+  localStorage.setItem(STORAGE_FORM, JSON.stringify(formData));
 }
 
-function onTextareaInput(e) {
-  formData[e.target.name] = e.target.value;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-}
-
-function populateTextarea() {
-  const savedData = localStorage.getItem(STORAGE_KEY);
-
+function onPageReload() {
+  const savedData = localStorage.getItem(STORAGE_FORM);
   const parsedData = JSON.parse(savedData);
+
   if (parsedData) {
-    refs.formEmail.value = parsedData.email;
-    refs.formTextArea.value = parsedData.message;
+    formEmail.value = parsedData.email;
   }
+  if (parsedData) {
+    formTextArea.value = parsedData.message;
+  }
+}
+
+function onFormSubmit(evt) {
+  evt.preventDefault();
+
+  formData.email = formEmail.value;
+  formData.message = formTextArea.value;
+
+  console.log('FINAL FORM DATA ', formData);
+  formSubmit.reset();
+  localStorage.removeItem(STORAGE_FORM);
 }
